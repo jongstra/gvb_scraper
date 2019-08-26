@@ -1,0 +1,23 @@
+########################################################################################
+# This file defines all Python package requirements for this project.                  #
+#                                                                                      #
+# Install packages using shell command: pip install -r requirements.txt                #
+#                                                                                      #
+# Created by Thomas Jongstra 2019 - for the Municipality of Amsterdam                  #
+########################################################################################
+
+####################
+# Helpers & Models #
+####################
+
+sqlalchemy
+sqlalchemy_utils
+psycopg2
+
+
+###########
+# Scraper #
+###########
+
+pandas
+pysftp

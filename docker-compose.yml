@@ -1,0 +1,22 @@
+version: '3.0'
+services:
+  database:
+    image: amsterdam/postgres11
+    ports:
+      - "9000:5432"
+    environment:
+      POSTGRES_DB: gvb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: insecure
+    volumes:
+      - ~/.ssh/datapunt.key:/root/.ssh/datapunt.key
+      - ./backups:/tmp/backups
+
+  scraper:
+    build: ./scraper
+    links:
+      - database
+    environment:
+      GVB_FTP_URL:
+      GVB_FTP_USERNAME:
+      GVB_FTP_PASSWORD:

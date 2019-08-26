@@ -1,0 +1,24 @@
+########################################################################################
+# This file defines which directories and files git should ignore for this repository. #
+#                                                                                      #
+# Created by Thomas Jongstra 2019 - for the Municipality of Amsterdam                  #
+########################################################################################
+
+# Do not synchronize the virtual environment directory.
+venv/
+
+# The cache and backups directories should be added on the servers side, by the DevOps team.
+cache/
+backups/
+
+# Do not synchronize any directories containing pre-compiled python files.
+**__pycache__/
+
+# Do not synchronize any Jupyter Notebook checkpoint directories.
+**.ipynb_checkpoints/
+
+# Do not synchronize any Jupyter Notebook files.
+**.ipynb
+
+# Do not add any log files.
+**.log
