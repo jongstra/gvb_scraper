@@ -280,7 +280,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', action='store_true', help='Print debug messages to stderr.')
     args = parser.parse_args()
-     # When using the debug flag, we only download 10 files. We also show debug messages in console.
+    # When using the debug flag, we only download 10 files. We also show debug messages in console.
     if args.debug == True:
         DEBUG = True
 
