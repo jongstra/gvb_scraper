@@ -1,7 +1,13 @@
 ########################################################################################
-# This file defines the GVB data models, so they can be created in a database.         #
+# This file defines several methods to enable several database operations, such as:    #
 #                                                                                      #
-# Based on previous code by Stephan Preeker.                                           #
+# - creating a database engine                                                         #
+# - creating a database connection                                                     #
+# - creating a new databas                                                             #
+# - creating database tables                                                           #
+# - specific operations to log the status of jobs in the CacheStatus table             #
+#                                                                                      #
+# This code is an adaptation and major extension of previous code by Stephan Preeker.  #
 # Curated by Thomas Jongstra 2019 - for the Municipality of Amsterdam                  #
 ########################################################################################
 
