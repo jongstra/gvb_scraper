@@ -125,7 +125,7 @@ def download_gvb_data():
 
         # When debugging, only download a small set of the file paths.
         if DEBUG == True:
-            file_paths = file_paths[:30]
+            file_paths = file_paths[:10]
 
         # Iterate over all the found regular files, and save them in a local folder
         for path in file_paths:
