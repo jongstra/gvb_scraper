@@ -25,10 +25,10 @@
 
 ## Run
 
-#### Start the development database:
+#### Spin the development database Docker up:
 	docker-compose up database
 
-#### Run the scraper (downloads the data to cache, and fills the database with the raw data):
+#### Run the scraping script (downloads the data to cache, and fills the database with the raw data):
     python scraper/scrape.py
 
 
