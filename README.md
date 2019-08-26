@@ -25,7 +25,7 @@
 
 ## Run
 
-#### Spin up the development database Docker container:
+#### Spin up the database Docker container:
 	docker-compose up database
 
 #### Run the scraping script (downloads the data to cache, and fills the database with the raw data):
