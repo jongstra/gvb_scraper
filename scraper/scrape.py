@@ -106,21 +106,11 @@ def download_gvb_data():
         dir_paths = []
         other_files_paths = []
 
-        # Calback functions used in the walktree statement below.
-        def store_files_paths(file_path):
-            file_paths.append(file_path)
-
-        def store_dir_paths(dir_path):
-            dir_paths.append(dir_path)
-
-        def store_other_file_type_paths(other_file_path):
-            other_files_paths.append(other_file_path)
-
         # Recursively walk through the entire GVB ftp, and save all directory and file paths.
         conn.walktree(remotepath='.',
-                      fcallback=store_files_paths,
-                      dcallback=store_dir_paths,
-                      ucallback=store_other_file_type_paths,
+                      fcallback=lambda x: file_paths.append(x),
+                      dcallback=lambda x: dir_paths.append(x),
+                      ucallback=lambda x: other_files_paths.append(x),
                       recurse=True)
 
         # Create a list of all document names in the download cache.
@@ -128,7 +118,7 @@ def download_gvb_data():
 
         # When debugging, only download a small set of the file paths.
         if DEBUG == True:
-            sample_size = min(len(cached_files), 10)
+            sample_size = min(len(file_paths), 10)
             file_paths = file_paths[:sample_size]
 
         # Iterate over all the found regular files, and save them in a local folder
