@@ -1,3 +1,13 @@
+########################################################################################
+# This file sets the docker-compose settings for the GVB scraping process.             #
+# It defines a "database" container (based on postgres), in which the scraped data     #
+# will land, as well as a "scraper" container, which runs the scraping process.        #
+#                                                                                      #
+# This code is an adaptation and extension of previous code by Stephan Preeker.        #
+# Curated by Thomas Jongstra 2019 - for the Municipality of Amsterdam                  #
+########################################################################################
+
+
 version: '3.0'
 services:
   database:
@@ -13,10 +23,11 @@ services:
       - ./backups:/tmp/backups
 
   scraper:
-    build: ./scraper
+    build: .
     links:
       - database
     environment:
       GVB_FTP_URL:
       GVB_FTP_USERNAME:
       GVB_FTP_PASSWORD:
+    command: python scraper/scrape.py
