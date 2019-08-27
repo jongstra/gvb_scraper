@@ -28,14 +28,14 @@
 
 ## Run
 
-#### Spin up the database Docker container:
+#### Spin up the 'database' Docker container:
 	docker-compose up database
 
-#### Run the scraping script (downloads the data to cache, and fills the database with the raw data):
-    python scraper/scrape.py
+#### Run the 'scraper' Docker container (downloads the data to cache, and fills the database with the raw data):
+    docker-compose up scraper
 
-#### (Instead of running the scraping script directly, we can also spin up the scraper Docker container to run the scraping process:)
-    (docker-compose up scraper)
+#### Instead of running the 'scraper' docker container directly, we can also run the scraping script outside of the Docker container. The --debug flag ensures that we only download and process a small amount of files from our data source, and that we see all debug log messages. The --local flag ensures that we use the correct database configuration settings for local development.
+    python scraper/scrape.py --debug --local
 
 
 ## Check
