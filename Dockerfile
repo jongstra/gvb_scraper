@@ -10,8 +10,6 @@ MAINTAINER datapunt@amsterdam.nl
 
 ENV PYTHONUNBUFFERED 1
 
-EXPOSE 9000
-
 # only do a pip install if requirements are changed
 COPY requirements.txt /requirements.txt
 

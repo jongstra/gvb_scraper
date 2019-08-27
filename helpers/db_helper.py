@@ -90,11 +90,11 @@ def set_session(engine):
 # Table and Database Handling Related Functions #
 #################################################
 
-def create_tables():
+def create_tables(section="docker"):
     """Create tables in the database based on the models defined in this file."""
 
     # Create a database session.
-    engine = make_engine()
+    engine = make_engine(section)
     session = set_session(engine)
 
     # Create all tables. Use the Base from models/models.py, as this contains all table definitions.

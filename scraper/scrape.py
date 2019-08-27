@@ -26,8 +26,9 @@ from helpers import db_helper
 # Initiate logger and set global variables #
 ############################################
 
-# Set debug flag (can be overridden using a command line argument/flag).
+# Set SEBUB and RUN_LOCAL flags (can be overridden using a command line argument/flag).
 DEBUG = False
+RUN_LOCAL = False
 
 # Set the logging level for the console output.
 console_logging_level = logging.ERROR
@@ -269,7 +270,10 @@ def store_data_in_database():
     log.info('Now storing all unprocessed files in the database...')
 
     # Get the database session to be able to commit data to the database.
-    engine = db_helper.make_engine()
+    section = "docker"  # Use the docker configuration (in config.ini) by default.
+    if RUN_LOCAL:
+        section = "local_development"  # Use the configuration for local development when the script is called with the --local flag.
+    engine = db_helper.make_engine(section=section)
     session = db_helper.set_session(engine)
 
     # Create a lookup dict for our models/classes. We use this to select the right data model for each file.
@@ -342,7 +346,10 @@ def main():
     download_gvb_data(file_paths)
 
     # Ensure all database tables (defined in model.py) exist. Create them when they do not exists.
-    db_helper.create_tables()
+    section = "docker"  # Use the docker configuration (in config.ini) by default.
+    if RUN_LOCAL:
+        section = "local_development"  # Use the configuration for local development when the script is called with the --local flag.
+    db_helper.create_tables(section=section)
 
     # Fill the GVB raw data tables, using all downloaded/cached files.
     store_data_in_database()
@@ -354,10 +361,15 @@ if __name__ == "__main__":
     # Parse the commandline arguments.
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', action='store_true', help='Print debug messages to stderr.')
+    parser.add_argument('--local', action='store_true', help='Use the local database configuration.')
     args = parser.parse_args()
-    # When using the debug flag, we only download 10 files. We also show debug messages in console.
+    # When using the "debug" flag, we only download 10 files. We also show debug messages in console.
     if args.debug == True:
         DEBUG = True
+    # When using the "local" flag, make sure the local configuration settings to the database are used.
+    if args.local == True:
+        RUN_LOCAL = True
+
 
     # Run the main routine.
     main()

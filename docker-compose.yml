@@ -30,4 +30,4 @@ services:
       GVB_FTP_URL:
       GVB_FTP_USERNAME:
       GVB_FTP_PASSWORD:
-    command: python scraper/scrape.py
+    command: python scraper/scrape.py --debug
