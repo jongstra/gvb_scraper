@@ -1,3 +1,11 @@
+########################################################################################
+# This file defines in which files the database configuration parameters               #
+# for the applicatio are located.                                                      #
+#                                                                                      #
+# This code is an adaptation and extension of previous code by Stephan Preeker.        #
+# Curated by Thomas Jongstra 2019 - for the Municipality of Amsterdam                  #
+########################################################################################
+
 import os
 import configparser
 

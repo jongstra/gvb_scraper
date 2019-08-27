@@ -13,9 +13,9 @@ import os
 import pandas as pd
 import pysftp
 
-# Add the current and parent paths to sys.path, so our own modules can be imported.
-sys.path.append(os.path.abspath('..'))
-sys.path.append(os.path.abspath('.'))
+# Add the parent paths to sys.path, so our own modules can be imported.
+parent_path = os.path.join(os.path.dirname(__file__), os.path.pardir)
+sys.path.append(parent_path)
 
 # Import own modules.
 from models import models
@@ -65,6 +65,7 @@ assert AUTH['password'], "The required environment variable 'GVB_FTP_PASSWORD' h
 # Set the cache directory.
 CACHE_DIRECTORY = os.path.abspath('./cache')
 
+
 #############################################################
 # Check download/cache directory existence & writing access #
 #############################################################
@@ -95,7 +96,9 @@ def download_gvb_data():
     """Download all new GVB files from the server. Files in our cache are not downloaded again."""
 
     # Connect with the GVB server.
-    with pysftp.Connection(host=AUTH['url'], username=AUTH['username'], password=AUTH['password'], cnopts=pysftp.CnOpts()) as conn:
+    cnopts = pysftp.CnOpts()
+    cnopts.hostkeys = None
+    with pysftp.Connection(host=AUTH['url'], username=AUTH['username'], password=AUTH['password'], cnopts=cnopts) as conn:
         log.info("Connection with GVB FTP server is succesfully established... ")
 
         # Create lists to save results from the recursive directory walktree.
@@ -125,7 +128,8 @@ def download_gvb_data():
 
         # When debugging, only download a small set of the file paths.
         if DEBUG == True:
-            file_paths = file_paths[:10]
+            sample_size = min(len(cached_files), 10)
+            file_paths = file_paths[:sample_size]
 
         # Iterate over all the found regular files, and save them in a local folder
         for path in file_paths:
@@ -211,8 +215,16 @@ def store_data_in_database():
     # Create a lookup dict for our models/classes. We use this to select the right data model for each file.
     data_models_dict = create_data_models_dict(models)
 
+    # Create a list of all document names in the download cache.
+    cached_files = os.listdir(CACHE_DIRECTORY)
+
+    # When debugging, only process a small set of the files.
+    if DEBUG == True:
+        sample_size = min(len(cached_files), 10)
+        cached_files = cached_files[:sample_size]
+
     # Load the data of each file into a dataframe, and add it to the database.
-    for filename in os.listdir(CACHE_DIRECTORY):
+    for filename in cached_files:
 
         # Check whether the file was succesfully processed before. If not, process it now.
         if not db_helper.check_job_already_completed(filename, session):
