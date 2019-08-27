@@ -92,12 +92,12 @@ def check_cache_directory():
 # Download GVB data #
 #####################
 
-def download_gvb_data():
-    """Download all new GVB files from the server. Files in our cache are not downloaded again."""
+def create_ftp_file_listing():
+    """Create a listing of all file paths present on the server."""
 
     # Connect with the GVB server.
     cnopts = pysftp.CnOpts()
-    cnopts.hostkeys = None
+    cnopts.hostkeys = None  # TODO: change so we do use a hostkey.
     with pysftp.Connection(host=AUTH['url'], username=AUTH['username'], password=AUTH['password'], cnopts=cnopts) as conn:
         log.info("Connection with GVB FTP server is succesfully established... ")
 
@@ -113,13 +113,28 @@ def download_gvb_data():
                       ucallback=lambda x: other_files_paths.append(x),
                       recurse=True)
 
-        # Create a list of all document names in the download cache.
-        cached_files = os.listdir(CACHE_DIRECTORY)
+        log.info("File listing of server has been created. Now closing server connection.")
+
+    # Return the file path listing.
+    return file_paths
+
+
+def download_gvb_data(file_paths):
+    """Download all new GVB files from the server. Files in our cache are not downloaded again."""
+
+    # Connect with the GVB server.
+    cnopts = pysftp.CnOpts()
+    cnopts.hostkeys = None  # TODO: change so we do use a hostkey.
+    with pysftp.Connection(host=AUTH['url'], username=AUTH['username'], password=AUTH['password'], cnopts=cnopts) as conn:
+        log.info("Connection with GVB FTP server is succesfully established... ")
 
         # When debugging, only download a small set of the file paths.
         if DEBUG == True:
             sample_size = min(len(file_paths), 10)
             file_paths = file_paths[:sample_size]
+
+        # Create a list of all document names in the download cache.
+        cached_files = os.listdir(CACHE_DIRECTORY)
 
         # Iterate over all the found regular files, and save them in a local folder
         for path in file_paths:
@@ -143,7 +158,62 @@ def download_gvb_data():
                     # Log an error when the filename would indicate of an attempted writing action outside of our intended cache directory.
                     log.critical(f'Write action would write file to other directory then our cache directory. Write action has not been performed. This could indicate a possible hacking attempt!')
 
-        log.info('Done scraping files!')
+        log.info('Finished downloading files! Now closing server connection.')
+
+
+
+# def download_gvb_data():
+#     """Download all new GVB files from the server. Files in our cache are not downloaded again."""
+
+#     # Connect with the GVB server.
+#     cnopts = pysftp.CnOpts()
+#     cnopts.hostkeys = None
+#     with pysftp.Connection(host=AUTH['url'], username=AUTH['username'], password=AUTH['password'], cnopts=cnopts) as conn:
+#         log.info("Connection with GVB FTP server is succesfully established... ")
+
+#         # Create lists to save results from the recursive directory walktree.
+#         file_paths = []
+#         dir_paths = []
+#         other_files_paths = []
+
+#         # Recursively walk through the entire GVB ftp, and save all directory and file paths.
+#         conn.walktree(remotepath='.',
+#                       fcallback=lambda x: file_paths.append(x),
+#                       dcallback=lambda x: dir_paths.append(x),
+#                       ucallback=lambda x: other_files_paths.append(x),
+#                       recurse=True)
+
+#         # Create a list of all document names in the download cache.
+#         cached_files = os.listdir(CACHE_DIRECTORY)
+
+#         # When debugging, only download a small set of the file paths.
+#         if DEBUG == True:
+#             sample_size = min(len(file_paths), 10)
+#             file_paths = file_paths[:sample_size]
+
+#         # Iterate over all the found regular files, and save them in a local folder
+#         for path in file_paths:
+
+#             # Get the filename.
+#             filename = os.path.basename(path)
+
+#             # Only download the file when it is not in our cache yet.
+#             if filename in cached_files:
+#                 log.info(f'File "{path}" is already present in our download cache. Skipping download.')
+#             else:
+#                 # Define the target path for the file. Ensure this path lies within our cache folder (to protect from possible hacks).
+#                 target_file_path = os.path.join(CACHE_DIRECTORY, filename)
+#                 target_file_path = os.path.abspath(target_file_path)
+#                 target_file_path_dir = os.path.dirname(target_file_path)
+#                 if target_file_path_dir == CACHE_DIRECTORY:
+#                     # Download the file, and save it in the download cache folder.
+#                     file = conn.get(path, target_file_path)
+#                     log.info(f'File "{path}" has been downloaded.')
+#                 else:
+#                     # Log an error when the filename would indicate of an attempted writing action outside of our intended cache directory.
+#                     log.critical(f'Write action would write file to other directory then our cache directory. Write action has not been performed. This could indicate a possible hacking attempt!')
+
+#         log.info('Done scraping files!')
 
 
 #############################################
@@ -265,8 +335,11 @@ def main():
     # Check whether the cache directory exists and is writable.
     check_cache_directory()
 
+    # Create a list of all the file paths on the ftp.
+    file_paths = create_ftp_file_listing()
+
     # Download the GVB data.
-    download_gvb_data()
+    download_gvb_data(file_paths)
 
     # Ensure all database tables (defined in model.py) exist. Create them when they do not exists.
     db_helper.create_tables()
