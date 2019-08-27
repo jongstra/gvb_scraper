@@ -13,7 +13,9 @@
 
 # Import public modules.
 import os
+import sys
 import logging
+import configparser
 from sqlalchemy import create_engine, func, MetaData
 from sqlalchemy import func
 from sqlalchemy.orm import sessionmaker
@@ -22,11 +24,17 @@ from sqlalchemy_utils.functions import database_exists
 from sqlalchemy_utils.functions import create_database
 from sqlalchemy_utils.functions import drop_database
 
+# Add the parent paths to sys.path, so our own modules can be imported.
+parent_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir)
+sys.path.append(parent_path)
+
 # Import own modules.
 from models import models
 
-# Import own settings.
-from settings import config_auth
+# Get database configurations using a config parser.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+config_auth = configparser.ConfigParser()
+config_auth.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.ini"))
 
 # Turn on logging.
 logging.basicConfig(level=logging.DEBUG)

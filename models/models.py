@@ -13,7 +13,7 @@ from sqlalchemy import Column, Integer, Float, String, TIMESTAMP, Date, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 
 # Add the parent paths to sys.path, so our own modules can be imported.
-parent_path = os.path.join(os.path.dirname(__file__), os.path.pardir)
+parent_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir)
 sys.path.append(parent_path)
 
 # Turn on the logger.
