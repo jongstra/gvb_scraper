@@ -308,7 +308,7 @@ if __name__ == "__main__":
     parser.add_argument('--debug', action='store_true', help='Print debug messages to stderr.')
     parser.add_argument('--local', action='store_true', help='Use the local database configuration.')
     args = parser.parse_args()
-    # When using the "debug" flag, we only download 10 files. We also show debug messages in console.
+    # When using the "debug" flag, we only download and process up to 10 files. We also show debug messages in console.
     if args.debug == True:
         DEBUG = True
     # When using the "local" flag, make sure the local configuration settings to the database are used.
