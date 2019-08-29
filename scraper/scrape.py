@@ -1,5 +1,7 @@
 ########################################################################################
-# This file defines the GVB data models, so they can be created in a database.         #
+# This file defines functions to download the GVB documents from their FTP server,     #
+# as well as functions to process these files and add their raw data                   #
+# to the correct database tables.                                                      #
 #                                                                                      #
 # This code is an adaptation and major extension of previous code by Stephan Preeker.  #
 # Curated by Thomas Jongstra 2019 - for the Municipality of Amsterdam                  #
