@@ -3,7 +3,7 @@
 #                                                                                      #
 # - creating a database engine                                                         #
 # - creating a database connection                                                     #
-# - creating a new databas                                                             #
+# - creating a new database                                                            #
 # - creating database tables                                                           #
 # - specific operations to log the status of jobs in the CacheStatus table             #
 #                                                                                      #
