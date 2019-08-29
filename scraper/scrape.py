@@ -315,6 +315,5 @@ if __name__ == "__main__":
     if args.local == True:
         RUN_LOCAL = True
 
-
     # Run the main routine.
     main()
