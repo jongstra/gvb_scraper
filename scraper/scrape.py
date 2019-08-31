@@ -28,7 +28,7 @@ from helpers import db_helper
 # Initiate logger and set global variables #
 ############################################
 
-# Set SEBUB and RUN_LOCAL flags (can be overridden using a command line argument/flag).
+# Set DEBUG and RUN_LOCAL flags (can be overridden using a command line argument/flag).
 DEBUG = False
 RUN_LOCAL = False
 
@@ -252,7 +252,7 @@ def store_data_in_database():
             # Load the data of the csv file into a dataframe.
             df = pd.read_csv(os.path.join(CACHE_DIRECTORY, filename), sep=';')
 
-            # Rename columns in the raw data if they contain spaces.  # CHECK: do we want this?
+            # Rename raw data columns which contain spaces.
             df_columns = df.columns
             if 'UurgroepOmschrijving (van aankomst)' in df_columns:
                 df = df.rename(columns={'UurgroepOmschrijving (van aankomst)': 'UurgroepOmschrijvingVanAankomst'})
