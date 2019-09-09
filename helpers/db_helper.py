@@ -24,7 +24,7 @@ from sqlalchemy_utils.functions import database_exists
 from sqlalchemy_utils.functions import create_database
 from sqlalchemy_utils.functions import drop_database
 
-# Add the parent paths to sys.path, so our own modules can be imported.
+# Add the parent paths to sys.path, so our own modules and configuration files can be imported.
 parent_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir)
 sys.path.append(parent_path)
 
@@ -32,9 +32,8 @@ sys.path.append(parent_path)
 from models import models
 
 # Get database configurations using a config parser.
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 config_auth = configparser.ConfigParser()
-config_auth.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.ini"))
+config_auth.read(os.path.join(parent_path, "config.ini"))
 
 # Turn on logging.
 logging.basicConfig(level=logging.DEBUG)
