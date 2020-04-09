@@ -26,10 +26,19 @@
 
 
 
+
+
 ## Run
 
 #### Activate the virtual environment, if it isn't active already:
     source venv/bin/activate
+
+#### Create the following environment variables, and assign the correct values to them:
+    GVB_FTP_URL
+    GVB_FTP_USERNAME
+    GVB_FTP_PASSWORD
+
+For local development, it is possible to automatically add/remove these environment variables when activating/deactivating the virtual environment. This can be accomplished by modifying the **venv/bin/activate** file. To accomplish this, add **export** statements for these variable at the bottom of the file, and **unset** statements for these variables within the **deactivate** function in this script. When deploying the code on a server, it would probably be a good idea to use more secure options to expose these secrets.
 
 #### Start the 'database' Docker container. The -d flag makes the database container run in the background:
 	docker-compose up -d database
