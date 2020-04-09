@@ -250,32 +250,39 @@ def store_data_in_database():
             # Create a record in the cache_status table, to indicate that the job has been started.
             job_id = db_helper.create_job_record(filename, session)
 
-            # Load the data of the csv file into a dataframe.
-            df = pd.read_csv(os.path.join(CACHE_DIRECTORY, filename), sep=';')
+            # Try whether the file has data.
+            try:
+                # Load the data of the csv file into a dataframe.
+                df = pd.read_csv(os.path.join(CACHE_DIRECTORY, filename), sep=';')
 
-            # Rename raw data columns which contain spaces.
-            df_columns = df.columns
-            if 'UurgroepOmschrijving (van aankomst)' in df_columns:
-                df = df.rename(columns={'UurgroepOmschrijving (van aankomst)': 'UurgroepOmschrijvingVanAankomst'})
-            if 'UurgroepOmschrijving (van vertrek)' in df_columns:
-                df = df.rename(columns={'UurgroepOmschrijving (van vertrek)': 'UurgroepOmschrijvingVanVertrek'})
+                # Rename raw data columns which contain spaces.
+                df_columns = df.columns
+                if 'UurgroepOmschrijving (van aankomst)' in df_columns:
+                    df = df.rename(columns={'UurgroepOmschrijving (van aankomst)': 'UurgroepOmschrijvingVanAankomst'})
+                if 'UurgroepOmschrijving (van vertrek)' in df_columns:
+                    df = df.rename(columns={'UurgroepOmschrijving (van vertrek)': 'UurgroepOmschrijvingVanVertrek'})
 
-            # Get the right data model for the current file.
-            data_model = get_data_model_from_df(df, models)
+                # Get the right data model for the current file.
+                data_model = get_data_model_from_df(df, models)
 
-            # Add the job id of the current job to all records created with this job.
-            df['JobId'] = job_id
+                # Add the job id of the current job to all records created with this job.
+                df['JobId'] = job_id
 
-            # Convert the dataframe to a format to be consumed by the database.
-            objects = df.to_dict('records')
+                # Convert the dataframe to a format to be consumed by the database.
+                objects = df.to_dict('records')
 
-            # Commit the data to the database.
-            session.bulk_insert_mappings(data_model, objects)
-            session.commit()
+                # Commit the data to the database.
+                session.bulk_insert_mappings(data_model, objects)
+                session.commit()
 
-            # Update a record in the cache_status table to indicate that the job has been finished.
-            db_helper.indicate_job_finished(filename, len(df), data_model.__name__, job_id, session)
-            log.info(f'Finished processing file {filename}". Stored {len(df)} records in the database.')
+                # Update a record in the cache_status table to indicate that the job has been finished.
+                db_helper.indicate_job_finished(filename, len(df), data_model.__name__, job_id, session)
+                log.info(f'Finished processing file {filename}". Stored {len(df)} records in the database.')
+
+            # If we find out that the dataframe was emtpy, do 
+            except pd.errors.EmptyDataError:
+                db_helper.indicate_job_finished(filename, -1, 'None', job_id, session)
+                log.info(f'Finished processing file {filename}". File was empty! Stored 0 records in the database. Adding an EntriesAdded value of -1 in the CaheStatus table, to indicate that the processed file was empty.')
 
     log.info('Finished processing all unprocessed files, and storing their data in the database!')
 
