@@ -46,7 +46,7 @@ For local development, it is possible to automatically add/remove these environm
 #### Run the 'scraper' Docker container (downloads the data to cache, and fills the database with all raw data):
     docker-compose up scraper
 
-#### Instead of running the 'scraper' docker container directly, we can also run the scraping script outside of the Docker container. We can do this by directly calling the scrape.py script while using the --local flag, to ensure that fitting database configuration settings are used. The --debug flag can also be used to download & process a small amount of files from our data source.
+#### Instead of running the scraping script from the 'scraper' docker container, we can also run the scraping script locally. We can do this by directly calling the scrape.py script, using the --local flag. This flag ensures that a fitting database configuration is used. The --debug flag can also be used to only download & process a small amount of files from our data source, so we can quickly see whether everything is working correctly.
     python scraper/scrape.py --debug --local
 
 
